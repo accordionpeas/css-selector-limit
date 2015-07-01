@@ -1,0 +1,42 @@
+{
+	"name": "css-selector-limit",
+
+	"description": "Determine whether CSS files contain more selectors than IE's limit of 4095",
+
+	"version": "0.1.0",
+
+	"homepage": "https://github.com/accordionpeas/css-selector-limit",
+
+	"author": {
+		"name": "Mike Nelson",
+		"url": "https://github.com/accordionpeas"
+	},
+
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/accordionpeas/css-selector-limit.git"
+	},
+
+	"bugs": {
+		"url": "https://github.com/accordionpeas/css-selector-limit/issues"
+	},
+
+	"main": "index.js",
+
+	"scripts": {
+		"test": "mocha test.js"
+	},
+
+	"dependencies": {
+		"lodash": "3.10.x"
+	},
+
+	"devDependencies": {
+		"mocha": "2.2.x",
+		"chai": "3.0.x"
+	},
+
+	"keywords": [
+		"css", "selector", "limit", "ie", "internet explorer"
+	]
+}
