@@ -14,8 +14,11 @@ var cssSelectorLimit = require('css-selector-limit');
 
 cssSelectorLimit([
 	__dirname + '/style/default.css'
-], function(results){
-	if(!results[0].ok){
+], function(err, results){
+	if(err){
+		//error occurred
+	}
+	else if(!results[0].ok){
 		//number of selectors is over the limit.
 	}
 });
@@ -25,7 +28,7 @@ cssSelectorLimit([
 	__dirname + '/style/default.css'
 ], {
 	limit: 10000
-}, function(results){
+}, function(err, results){
 	//do something with results.
 });
 ```

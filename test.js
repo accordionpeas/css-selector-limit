@@ -14,7 +14,7 @@ describe('css selector limit warning', function(){
 
 	it('returns an array of results in the same order as the array of files that it was given', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[0].file).to.equal(__dirname + '/tests/file-0.css');
 				expect(results[1].file).to.equal(__dirname + '/tests/file-1.css');
@@ -23,7 +23,7 @@ describe('css selector limit warning', function(){
 				expect(results[4].file).to.equal(__dirname + '/tests/file-4.css');
 				expect(results[5].file).to.equal(__dirname + '/tests/file-5.css');
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -34,14 +34,14 @@ describe('css selector limit warning', function(){
 	
 	it('sets "ok" property to true if the file has less than or equal selectors to limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[0].ok).to.equal(true);
 				expect(results[1].ok).to.equal(true);
 				expect(results[2].ok).to.equal(true);
 				expect(results[3].ok).to.equal(true);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -52,12 +52,12 @@ describe('css selector limit warning', function(){
 	
 	it('sets "ok" property to false if the file has more selectors than the limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[4].ok).to.equal(false);
 				expect(results[5].ok).to.equal(false);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -68,14 +68,14 @@ describe('css selector limit warning', function(){
 	
 	it('sets "line" property to null if the file has less than or equal selectors to the limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[0].line).to.equal(null);
 				expect(results[1].line).to.equal(null);
 				expect(results[2].line).to.equal(null);
 				expect(results[3].line).to.equal(null);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -86,12 +86,12 @@ describe('css selector limit warning', function(){
 	
 	it('sets "line" property to the line number of the first selector that went over the limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[4].line).to.equal(16381);
 				expect(results[5].line).to.equal(16381);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -102,14 +102,14 @@ describe('css selector limit warning', function(){
 	
 	it('sets "selector" property to null if the file has less than or equal selectors to the limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[0].line).to.equal(null);
 				expect(results[1].line).to.equal(null);
 				expect(results[2].line).to.equal(null);
 				expect(results[3].line).to.equal(null);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -120,12 +120,12 @@ describe('css selector limit warning', function(){
 	
 	it('sets "selector" property to the first selector that went over the limit', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[4].selector).to.equal('.selector-4096{');
 				expect(results[5].selector).to.equal('.selector-4096{');
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -136,7 +136,7 @@ describe('css selector limit warning', function(){
 	
 	it('sets "count" property to the number of selectors in the file', function(done){
 
-		cssSelectorLimit(fileList, function(results){
+		cssSelectorLimit(fileList, function(err, results){
 			try{
 				expect(results[0].count).to.equal(0);
 				expect(results[1].count).to.equal(2);
@@ -145,7 +145,7 @@ describe('css selector limit warning', function(){
 				expect(results[4].count).to.equal(4096);
 				expect(results[5].count).to.equal(7000);
 
-				done();
+				done(err);
 			}
 			catch(err){
 				done(err);
@@ -156,7 +156,7 @@ describe('css selector limit warning', function(){
 	
 	it('overwrites limit with given option', function(done){
 		
-		cssSelectorLimit(fileList, {limit: 4094}, function(results){
+		cssSelectorLimit(fileList, {limit: 4094}, function(err, results){
 			try{
 				expect(results[0].ok).to.equal(true);
 				expect(results[1].ok).to.equal(true);
@@ -165,6 +165,20 @@ describe('css selector limit warning', function(){
 				expect(results[4].ok).to.equal(false);
 				expect(results[5].ok).to.equal(false);
 
+				done(err);
+			}
+			catch(err){
+				done(err);
+			}
+		});
+		
+	});
+	
+	it('pass an error as the first argument if an error occurs', function(done){
+		
+		cssSelectorLimit(['made/up/file.css'], {limit: 4094}, function(err, results){
+			try{
+				expect(err instanceof Error).to.equal(true);
 				done();
 			}
 			catch(err){

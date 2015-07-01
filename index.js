@@ -12,14 +12,22 @@ function cssSelectorLimitWarning(files, options, callback){
 		limit: 4095
 	}, options);
 
-	var length = files.length,
+	var hasErrored = false,
+		length = files.length,
 		count = 0,
 		results = [],
-		eachCallback = function(result, index){
-			results[index] = result;
-			count++;
-			if(count === length){
-				callback(results);
+		eachCallback = function(err, result, index){
+			if(err){
+				callback(err);
+				hasErrored = true;
+			}
+			
+			if(!hasErrored){
+				results[index] = result;
+				count++;
+				if(count === length){
+					callback(null, results);
+				}
 			}
 		};
 
@@ -40,35 +48,43 @@ function checkFile(filePath, index, options, callback){
 
 	fs.readFile(filePath, {encoding: 'utf-8'}, function(err, file){
 		
-		var lineSplit = file.split(/\n|\r/);
+		if(err){
+			return callback(err);
+		}
 		
-		for(var i=0; i<lineSplit.length; i++){
+		try{
+			var lineSplit = file.split(/\n|\r/);
 			
-			//if line has a selector
-			var selectorMatch = lineSplit[i].match(/[^{]+{/g);
-			
-			if(selectorMatch){				
-				for(var j=0; j<selectorMatch.length; j++){
-					//split by comma to ensure we count comma-separated selectors
-					var commaSplit = selectorMatch[j].split(',');
-					
-					result.count += commaSplit.length;
-					
-					if(result.count > options.limit){
-						result.ok = false;
+			for(var i=0; i<lineSplit.length; i++){
+				
+				//if line has a selector
+				var selectorMatch = lineSplit[i].match(/[^{]+{/g);
+				
+				if(selectorMatch){				
+					for(var j=0; j<selectorMatch.length; j++){
+						//split by comma to ensure we count comma-separated selectors
+						var commaSplit = selectorMatch[j].split(',');
 						
-						if(!isOverLimit){
-							result.selector = lineSplit[i];
-							result.line = i+1;
+						result.count += commaSplit.length;
+						
+						if(result.count > options.limit){
+							result.ok = false;
+							
+							if(!isOverLimit){
+								result.selector = lineSplit[i];
+								result.line = i+1;
+							}
+							isOverLimit = true;
 						}
-						isOverLimit = true;
 					}
 				}
 			}
+			
+			callback(null, result, index);
 		}
-
-		callback(result, index);
-
+		catch(err){
+			callback(err);
+		}
 	});
 }
 

@@ -3,7 +3,7 @@
 
 	"description": "Determine whether CSS files contain more selectors than IE's limit of 4095",
 
-	"version": "0.1.0",
+	"version": "0.2.0",
 
 	"homepage": "https://github.com/accordionpeas/css-selector-limit",
 
