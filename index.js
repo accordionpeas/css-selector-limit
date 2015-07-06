@@ -3,6 +3,11 @@ var fs = require('fs'),
 
 function cssSelectorLimitWarning(files, options, callback){
 
+	//allow a single file to be passed in.
+	if(!Array.isArray(files)){
+		files = [files];
+	}
+
 	if(arguments.length === 2){
 		callback = options;
 		options = {};
@@ -46,12 +51,7 @@ function checkFile(filePath, index, options, callback){
 		},
 		isOverLimit = false;
 
-	fs.readFile(filePath, {encoding: 'utf-8'}, function(err, file){
-		
-		if(err){
-			return callback(err);
-		}
-		
+	var analyse = function(file){
 		try{
 			var lineSplit = file.split(/\n|\r/);
 			
@@ -85,7 +85,29 @@ function checkFile(filePath, index, options, callback){
 		catch(err){
 			callback(err);
 		}
-	});
+	};
+
+	try{
+
+		fs.exists(filePath, function(exists){
+			if(exists){
+				fs.readFile(filePath, {encoding: 'utf-8'}, function(err, file){
+					if(err){
+						return callback(err);
+					}
+					analyse(file);
+				});
+			}
+			//if file doesn't exist assume that we've been passed the file contents
+			else{
+				analyse(filePath);
+			}
+		});
+
+	}
+	catch(err){
+		callback(err);
+	}
 }
 
 module.exports = cssSelectorLimitWarning;

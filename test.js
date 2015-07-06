@@ -16,6 +16,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].file).to.equal(__dirname + '/tests/file-0.css');
 				expect(results[1].file).to.equal(__dirname + '/tests/file-1.css');
 				expect(results[2].file).to.equal(__dirname + '/tests/file-2.css');
@@ -36,6 +37,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].ok).to.equal(true);
 				expect(results[1].ok).to.equal(true);
 				expect(results[2].ok).to.equal(true);
@@ -54,6 +56,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[4].ok).to.equal(false);
 				expect(results[5].ok).to.equal(false);
 
@@ -70,6 +73,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].line).to.equal(null);
 				expect(results[1].line).to.equal(null);
 				expect(results[2].line).to.equal(null);
@@ -88,6 +92,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[4].line).to.equal(16381);
 				expect(results[5].line).to.equal(16381);
 
@@ -104,6 +109,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].line).to.equal(null);
 				expect(results[1].line).to.equal(null);
 				expect(results[2].line).to.equal(null);
@@ -122,6 +128,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[4].selector).to.equal('.selector-4096{');
 				expect(results[5].selector).to.equal('.selector-4096{');
 
@@ -138,6 +145,7 @@ describe('css selector limit warning', function(){
 
 		cssSelectorLimit(fileList, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].count).to.equal(0);
 				expect(results[1].count).to.equal(2);
 				expect(results[2].count).to.equal(500);
@@ -158,6 +166,7 @@ describe('css selector limit warning', function(){
 		
 		cssSelectorLimit(fileList, {limit: 4094}, function(err, results){
 			try{
+				expect(err).to.equal(null);
 				expect(results[0].ok).to.equal(true);
 				expect(results[1].ok).to.equal(true);
 				expect(results[2].ok).to.equal(true);
@@ -176,9 +185,41 @@ describe('css selector limit warning', function(){
 	
 	it('pass an error as the first argument if an error occurs', function(done){
 		
-		cssSelectorLimit(['made/up/file.css'], {limit: 4094}, function(err, results){
+		cssSelectorLimit(null, {limit: 4094}, function(err, results){
 			try{
 				expect(err instanceof Error).to.equal(true);
+				done();
+			}
+			catch(err){
+				done(err);
+			}
+		});
+		
+	});
+
+	it('accepts a single file as the first argument', function(done){
+		
+		cssSelectorLimit(fileList[0], function(err, results){
+			try{
+				expect(err).to.equal(null);
+				expect(results[0].ok).to.equal(true);
+				done();
+			}
+			catch(err){
+				done(err);
+			}
+		});
+		
+	});
+
+	it('accepts the contents of a file instead of the file path', function(done){
+
+		var file = fs.readFileSync(fileList[0], {encoding: 'utf-8'});
+		
+		cssSelectorLimit(file, function(err, results){
+			try{
+				expect(err).to.equal(null);
+				expect(results[0].ok).to.equal(true);
 				done();
 			}
 			catch(err){

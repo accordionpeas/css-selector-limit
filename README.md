@@ -31,6 +31,16 @@ cssSelectorLimit([
 }, function(err, results){
 	//do something with results.
 });
+
+//pass file contents directly
+fs.readFile(__dirname + '/style/default.css', {encoding: 'utf-8'}, function(err, file){
+	cssSelectorLimit([
+		file
+	], function(err, results){
+		//do something with results.
+	});
+});
+
 ```
 
 ## Options
